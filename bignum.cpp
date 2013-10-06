@@ -9,6 +9,13 @@ class Bignum
 		string value;
 		int sign;
 
+		static int _abs_compare(const string a, const string b)
+		{
+			if(a.length() == b.length())
+				return a[a.length() - 1] < b[b.length() - 1];
+			return a.length() < b.length();
+		}
+
 		static string _plus(string a, string b)
 		{
 			// for two positive integer
@@ -80,22 +87,39 @@ class Bignum
 				rtn->value = _plus(this->value, b.value);
 			}
 			else{
-				rtn->sign = 0;
 				rtn->value = _minus(this->value, b.value);
+				rtn->sign = _abs_compare(this->value, b.value) != (*this < b);
 			}
-
 
 			return *rtn;
 		}
 
-		int operator>(const Bignum &b) const
+		Bignum& operator-(const Bignum &b)
+		{
+			// TODO why?
+			Bignum *rtn = new Bignum();
+			if(this->sign != b.sign){
+				rtn->sign = this->sign;
+				rtn->value = _plus(this->value, b.value);
+			}
+			else{
+				rtn->value = _minus(this->value, b.value);
+				rtn->sign = _abs_compare(this->value, b.value) != (*this < b);
+				if(rtn->value == "0")
+					rtn->sign = 0;
+			}
+
+			return *rtn;
+		}
+
+		int operator<(const Bignum &b) const
 		{
 			if(this->sign != b.sign)
-				return !(this->sign > b.sign);
+				return !(this->sign < b.sign);
 			if(this->value.length() == b.value.length())
-				return this->value[this->value.length() - 1] > b.value[b.value.length() - 1];
+				return this->value[this->value.length() - 1] < b.value[b.value.length() - 1];
 
-			return this->value.length() > b.value.length();
+			return this->value.length() < b.value.length();
 		}
 
 		friend istream& operator>>(istream &is, Bignum &b)
@@ -143,7 +167,7 @@ int main(){
 	cin >> a >> b;
 	//cout << a << endl;
 	//cout << b << endl;
-	cout << (a + b) << endl;
+	cout << (a - b) << endl;
 
 	return 0;
 }

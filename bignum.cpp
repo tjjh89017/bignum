@@ -167,7 +167,7 @@ int main(){
 	cin >> a >> b;
 	//cout << a << endl;
 	//cout << b << endl;
-	cout << (a - b) << endl;
+	cout << (a + b) << endl;
 
 	return 0;
 }
